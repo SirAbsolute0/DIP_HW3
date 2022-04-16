@@ -26,7 +26,6 @@ def main():
     input_matrix = np.int_(rand(15,15)*256)
     print("---------------Input Matrix----------------")
     print(input_matrix)
-
     dft_obj = dft.Dft()
 
     # Compute dft

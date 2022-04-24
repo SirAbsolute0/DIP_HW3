@@ -10,11 +10,14 @@ class Filtering:
 
     def get_gaussian_filter(self):
         """Initialzes/Computes and returns a 5X5 Gaussian filter"""
-        local_img = self.image
+        #Declaring result filter
         filter = np.zeros((5, 5))
-        sigma = 6
+
+        #Sigma and sum variables for Gausian filter calculations
+        sigma = 5
         sum = 0
         
+        #Compute the 5x5 Gausian filter based on sigma values
         for x in range(0, filter.shape[0]):
             for y in range(0, filter.shape[1]):
                 filter[x, y] = 1/( 2*pi*(sigma**2) ) * math.exp( -1*( ((x-2)**2 + (y-2)**2) / (2* (sigma**2)) ))
@@ -23,10 +26,12 @@ class Filtering:
         for num_1 in filter:
             for num_2 in filter:
                 num_2 *= (1/sum)
+
         return filter
 
     def get_laplacian_filter(self):
         """Initialzes and returns a 3X3 Laplacian filter"""
+        #Simple laplacian filter from lecture
         filter = np.matrix([[0, -1, 0],
                             [-1, 4, -1],
                             [0, -1, 0]])
@@ -38,10 +43,12 @@ class Filtering:
             filter_name: a string, specifying the type of filter to use ["gaussian", laplacian"]
             return type: a 2d numpy array
                 """
+
+        #When function called for gaussian filter
         if(filter_name == "gaussian"):
+            #Get a local copy of the gaussian filter
             original_filter = Filtering.get_gaussian_filter(self)
             filter = original_filter.copy()
-
 
             #Rotate filter 180 degrees
             x = original_filter.shape[0] - 1
@@ -57,6 +64,7 @@ class Filtering:
                 i += 1
                 x -= 1
 
+            #Get local copy of the image and initialized padded 0s
             local_img = self.image.copy()
             padded_img = np.zeros([local_img.shape[0] + 4, local_img.shape[1] + 4])
 
@@ -64,9 +72,9 @@ class Filtering:
             for x in range(0, local_img.shape[0]):
                 for y in range(0, local_img.shape[1]):
                     padded_img[x + 2, y + 2] = local_img[x, y]
-            
             result_img = padded_img.copy()
-            #convolution
+
+            #convolution based on 5x5 Gaussian
             for x in range(0, padded_img.shape[0] - 4):
                 for y in range(0, padded_img.shape[1] - 4):
                     result_img[x + 2, y + 2] = ( padded_img[x, y]*filter[0, 0] + padded_img[x, y+1]*filter[0,1]
@@ -95,8 +103,9 @@ class Filtering:
 
             return(result_img)
 
-            
+        #When function called laplacian filter
         elif(filter_name == "laplacian"):
+            #Get a local copy of the filter
             original_filter = Filtering.get_laplacian_filter(self)
             filter = original_filter.copy()
 
@@ -114,6 +123,7 @@ class Filtering:
                 i += 1
                 x -= 1
 
+            #Get a local copy of the image and initiate padded 0s
             local_img = self.image.copy()
             padded_img = np.zeros([local_img.shape[0] + 2, local_img.shape[1] + 2])
 
@@ -123,7 +133,8 @@ class Filtering:
                     padded_img[x + 1, y + 1] = local_img[x, y]
             
             result_img = padded_img.copy()
-            #convolution
+
+            #convolution with laplactian 3x3 image
             for x in range(0, padded_img.shape[0] - 2):
                 for y in range(0, padded_img.shape[1] - 2):
                     temp = ( padded_img[x, y]*filter[0, 0] + padded_img[x, y+1]*filter[0,1]

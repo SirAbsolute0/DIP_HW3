@@ -98,10 +98,9 @@ class Filtering:
         #calculate magnitude and do full contrast stretch to display the result image
         result = np.abs(final_img)    
 
-        min = np.amin()
+        min = np.amin(result)
         max = np.amax(result)
         
-        print(result.real)
         for x in range(0, result.shape[0]):
             for y in range(0, result.shape[1]):
                 result[x, y] = int((254/(max - min)) * (result[x, y] - min) + 0.5)
